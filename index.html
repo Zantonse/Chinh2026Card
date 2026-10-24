@@ -203,6 +203,22 @@ li.visited .door .seen{opacity:1}
 .journey{padding-block:48px 28px}
 .letter{padding-block:56px 40px}
 
+
+/* Opening: Marin's birthday videos */
+.hi{padding-block:48px 8px;text-align:center}
+.hi h2{font-size:clamp(30px,4.6vw,52px);line-height:1.08}
+.hi h2 em{font-style:normal;color:var(--accent)}
+.hi > p{color:var(--muted);margin:10px auto 28px;max-width:44ch}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,250px));justify-content:center;gap:clamp(14px,3vw,36px)}
+.vid{position:relative;aspect-ratio:9/16;border-radius:24px;overflow:hidden;background:#140e28;border:6px solid var(--paper);box-shadow:0 2px 4px var(--shadow),0 30px 50px -24px var(--shadow)}
+.vid:nth-child(1){transform:rotate(-2.5deg)}.vid:nth-child(2){transform:rotate(2deg)}
+.vid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vid button{position:absolute;inset:0;border:0;background:linear-gradient(to top,rgba(20,14,40,.55),rgba(20,14,40,0) 45%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:18px;color:#fff;transition:opacity .3s}
+.vid button .pl{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);color:#2a2147;display:grid;place-items:center;font-size:24px;padding-left:4px;margin:auto 0 0;box-shadow:0 6px 20px rgba(0,0,0,.3);transform:translateY(-40%)}
+.vid button .lab{font-family:var(--f-hand);font-size:26px;line-height:1}
+.vid.playing button{opacity:0}
+.hi .hand{font-family:var(--f-hand);font-size:28px;color:var(--muted);margin-top:20px}
+
 /* Sealed envelope */
 .env{position:fixed;inset:0;z-index:80;background:var(--bg);display:grid;place-items:center;padding:24px 16px;transition:opacity .7s ease .9s}
 .env.gone{opacity:0;pointer-events:none}
@@ -316,6 +332,17 @@ li.visited .door .seen{opacity:1}
     <p class="mono env-hint">Tap to open</p>
   </div>
 </div>
+
+<section class="wrap hi" id="hi" aria-label="A message from Marin">
+  <p class="mono" style="color:var(--muted);margin:0 auto 12px">Exhibit 0 · Before anything else</p>
+  <h2>Someone has something <em>to say.</em></h2>
+  <p>Turn your sound on.</p>
+  <div class="vids">
+    <div class="vid"><video src="v/marin1.mp4" poster="v/marin1.jpg" playsinline preload="metadata"></video><button type="button" aria-label="Play Marin's video, take 1"><span class="pl">▶</span><span class="lab">Take 1</span></button></div>
+    <div class="vid"><video src="v/marin2.mp4" poster="v/marin2.jpg" playsinline preload="metadata"></video><button type="button" aria-label="Play Marin's video, take 2"><span class="pl">▶</span><span class="lab">Take 2</span></button></div>
+  </div>
+  <p class="hand">"Happy birthday, Mama!" · love, bb Marin</p>
+</section>
 
 <header class="wrap hero">
   <div>
@@ -627,7 +654,13 @@ const PINS=[["San Francisco", "Home", 3, 622, 83], ["Las Vegas", "EDC, our anniv
 }
 // then and now
 {const box=document.getElementById("tnBox"),r=document.getElementById("tnRange");r.addEventListener("input",()=>box.style.setProperty("--x",r.value+"%"))}
+// Marin's videos: tap to play with sound; opening the envelope plays take 1 then take 2
+const vids=[...document.querySelectorAll(".vid")];
+function playVid(n,chain){const v=vids[n].querySelector("video");vids.forEach((w,i)=>{if(i!==n){const o=w.querySelector("video");o.pause();w.classList.remove("playing")}});
+  v.currentTime=0;v.muted=false;const pr=v.play();vids[n].classList.add("playing");if(pr&&pr.catch)pr.catch(()=>vids[n].classList.remove("playing"));
+  v.onended=()=>{vids[n].classList.remove("playing");vids[n].querySelector(".pl").textContent="↻";if(chain&&n+1<vids.length)setTimeout(()=>playVid(n+1,true),500)}}
+vids.forEach((w,n)=>w.querySelector("button").onclick=()=>playVid(n,false));
 // sealed envelope: shown once per visit
 {const env=document.getElementById("env");let seen=false;try{seen=sessionStorage.getItem("envOpened")==="1"}catch(e){}
- if(seen)env.remove();else{document.body.style.overflow="hidden";document.getElementById("envBtn").onclick=()=>{env.classList.add("open","gone");document.body.style.overflow="";try{sessionStorage.setItem("envOpened","1")}catch(e){}setTimeout(()=>env.remove(),1800)};}}
+ if(seen)env.remove();else{document.body.style.overflow="hidden";document.getElementById("envBtn").onclick=()=>{env.classList.add("open","gone");vids.forEach(w=>{const v=w.querySelector("video");v.muted=false;const pr=v.play();if(pr&&pr.then)pr.then(()=>v.pause()).catch(()=>{});else v.pause()});setTimeout(()=>playVid(0,true),1500);document.body.style.overflow="";try{sessionStorage.setItem("envOpened","1")}catch(e){}setTimeout(()=>env.remove(),1800)};}}
 </script>
