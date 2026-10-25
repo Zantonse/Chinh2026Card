@@ -15,6 +15,7 @@
   --accent-ink:#1b2440;
   --shadow:rgba(52,30,92,.18);
   --scrim:rgba(14,18,32,.94);
+  --r1:#ecc2b4;--r2:#df8a62;--r3:#b4482f;--jun:#5f5a3c;--sun:#f6b453;--glow:rgba(246,180,83,.35);--star:transparent;
   --f-display:"Young Serif",Georgia,"Times New Roman",serif;
   --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-hand:"Nanum Pen Script","Comic Sans MS","Bradley Hand",cursive;
@@ -22,8 +23,10 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#211a35;--paper:#f6f3fa;--ink:#efeaf8;--muted:#b2a6cf;--line:#3d3160;
-  --accent:#f0a83a;--accent-ink:#1b2440;--shadow:rgba(0,0,0,.45);--scrim:rgba(8,10,18,.96);color-scheme:dark}}
+  --accent:#f0a83a;--accent-ink:#1b2440;--shadow:rgba(0,0,0,.45);--scrim:rgba(8,10,18,.96);color-scheme:dark;
+  --r1:#5b3f63;--r2:#8a3f3c;--r3:#5e2626;--jun:#2b2a22;--sun:#f3c77d;--glow:rgba(243,199,125,.18);--star:#f6efe0}}
 :root[data-theme="dark"]{
+  --r1:#5b3f63;--r2:#8a3f3c;--r3:#5e2626;--jun:#2b2a22;--sun:#f3c77d;--glow:rgba(243,199,125,.18);--star:#f6efe0;
   --bg:#211a35;--paper:#f6f3fa;--ink:#efeaf8;--muted:#b2a6cf;--line:#3d3160;
   --accent:#f0a83a;--accent-ink:#1b2440;--shadow:rgba(0,0,0,.45);--scrim:rgba(8,10,18,.96);color-scheme:dark}
 
@@ -219,6 +222,24 @@ li.visited .door .seen{opacity:1}
 .vid.playing button{opacity:0}
 .hi .hand{font-family:var(--f-hand);font-size:28px;color:var(--muted);margin-top:20px}
 
+
+/* Sedona: hand-drawn red rock layers (Cathedral Rock, Bell Rock, Courthouse Butte) */
+.desert{position:relative;pointer-events:none;overflow:hidden}
+.desert svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.desert .r1{fill:var(--r1)}.desert .r2{fill:var(--r2)}.desert .r3{fill:var(--r3)}.desert .jun{fill:var(--jun)}
+.desert .sun{fill:var(--sun)}.desert .glow{fill:var(--glow)}.desert .star{fill:var(--star)}
+.desert .lyr{transform:translateY(calc(var(--p,0)*var(--k,0)*1px));transition:transform .1s linear}
+.desert-band{height:clamp(170px,26vw,340px);margin-top:-20px;background:linear-gradient(to bottom,transparent,color-mix(in oklab,var(--sun) 22%,var(--bg)) 55%,color-mix(in oklab,var(--sun) 30%,var(--bg)))}
+.desert-cap{position:absolute;left:0;right:0;top:18%;text-align:center;font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.env .desert{position:absolute;left:0;right:0;bottom:0;height:min(32vh,300px);z-index:0}
+.env{background:linear-gradient(to bottom,var(--bg) 35%,color-mix(in oklab,var(--sun) 28%,var(--bg)))}
+.env-in{position:relative;z-index:1}
+#letter{background:linear-gradient(to bottom,var(--bg) 0,color-mix(in oklab,var(--sun) 24%,var(--bg)) 75%)}
+#letter .desert{height:clamp(160px,24vw,300px);margin-top:-30px}
+#letter .foot{background:var(--r3);color:#f6e7dc;margin:0;padding:6px 16px 120px}
+.hero{position:relative}
+.hero::before{content:"";position:absolute;right:4%;top:6%;width:min(46vw,520px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 65%);z-index:-1;pointer-events:none}
+
 /* Sealed envelope */
 .env{position:fixed;inset:0;z-index:80;background:var(--bg);display:grid;place-items:center;padding:24px 16px;transition:opacity .7s ease .9s}
 .env.gone{opacity:0;pointer-events:none}
@@ -316,10 +337,11 @@ li.visited .door .seen{opacity:1}
   .map-card{position:static;max-width:none;border-radius:0}
   .lb-prev,.lb-next{top:auto;bottom:-56px;transform:none}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv{opacity:1;translate:none}.door:hover{transform:none}.lb-stage .ph{transition:opacity .3s!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.desert .lyr{transform:none}.rv{opacity:1;translate:none}.door:hover{transform:none}.lb-stage .ph{transition:opacity .3s!important}}
 </style>
 
 <div class="env" id="env">
+  <div class="desert" data-scene="env"></div>
   <div class="env-in">
     <p class="mono" style="color:var(--muted);margin:0">Sealed with love · Open on your birthday</p>
     <button class="env-btn" id="envBtn" type="button" aria-label="Open the envelope">
@@ -357,6 +379,7 @@ li.visited .door .seen{opacity:1}
   </div>
   <div class="pile" id="pile"></div>
 </header>
+<div class="desert desert-band" data-scene="band" data-parallax><p class="desert-cap">This year: the red rocks of Sedona</p></div>
 
 <section class="wrap doors" id="doors" aria-label="Chapters">
   <div class="j-head"><h2>Pick a door</h2><p>Fifteen chapters, one map, and a letter at the end. Open them in order, or wherever you like.</p></div>
@@ -412,7 +435,8 @@ li.visited .door .seen{opacity:1}
   <div class="from-marin" id="fromMarin">
     <div class="note">Happy birthday, Mama. I love you this much ↔ and more. Thank you for all the snuggles.<small>Love, bb Marin</small></div>
   </div>
-</div></section>
+</div><div class="desert" data-scene="letter"></div>
+<p class="foot mono">Made with love, for Chinh · Sedona 2026</p></section>
 <nav class="bar" aria-label="Chapter navigation">
   <button class="bb home" id="rmHome" type="button" aria-label="Back to all chapters">⌂</button>
   <button class="bb" id="rmPrev" type="button" aria-label="Previous chapter">‹</button>
@@ -660,6 +684,20 @@ function playVid(n,chain){const v=vids[n].querySelector("video");vids.forEach((w
   v.currentTime=0;v.muted=false;const pr=v.play();vids[n].classList.add("playing");if(pr&&pr.catch)pr.catch(()=>vids[n].classList.remove("playing"));
   v.onended=()=>{vids[n].classList.remove("playing");vids[n].querySelector(".pl").textContent="↻";if(chain&&n+1<vids.length)setTimeout(()=>playVid(n+1,true),500)}}
 vids.forEach((w,n)=>w.querySelector("button").onclick=()=>playVid(n,false));
+
+// Sedona scenes: three rock layers drawn in SVG, sun behind; layers drift at different speeds
+function sedona(stars){
+  const st=stars?[[90,40],[210,80],[340,30],[520,70],[610,24],[880,46],[1010,84],[1180,30],[1300,66],[1400,22],[760,90],[450,110]].map(([x,y])=>`<circle class="star" cx="${x}" cy="${y}" r="1.6"/>`).join(""):"";
+  return `<svg viewBox="0 0 1440 320" preserveAspectRatio="${innerWidth<760?"xMaxYMax":"xMidYMax"} slice" aria-hidden="true" focusable="false">${st}
+  <circle class="glow" cx="720" cy="195" r="95"/><circle class="sun" cx="720" cy="195" r="46"/>
+  <g class="lyr" style="--k:.10"><path class="r1" d="M0 220L80 200 140 205 170 170 260 168 290 190 380 185 420 150 520 148 545 175 640 180 700 160 760 158 800 185 900 190 960 140 1080 138 1110 170 1200 175 1260 150 1330 152 1360 180 1440 185V340H0Z"/></g>
+  <g class="lyr" style="--k:.22"><path class="r2" d="M0 260L120 250 200 262 225 245C240 215 255 200 275 190 285 160 300 140 320 135 340 140 352 160 360 190 385 202 400 220 412 248L450 250 470 190 478 176 640 172 650 190 668 252 760 258 860 246 900 230 930 200 950 196 958 160 972 150 985 158 992 196 1020 200 1050 238 1150 250 1260 240 1440 255V340H0Z"/></g>
+  <g class="lyr" style="--k:.36"><path class="r3" d="M0 300L160 292 260 300 420 290 560 298 700 292 840 296 980 286 1040 280 1070 250 1090 238 1100 200 1110 192 1118 150 1128 120 1136 150 1142 186 1160 190 1170 140 1178 100 1186 92 1194 104 1200 150 1210 182 1228 186 1236 130 1246 110 1256 128 1262 176 1280 200 1300 240 1340 268 1440 280V340H0Z"/>
+   <g class="jun"><ellipse cx="90" cy="300" rx="26" ry="15"/><ellipse cx="120" cy="304" rx="16" ry="10"/><ellipse cx="410" cy="296" rx="22" ry="12"/><ellipse cx="640" cy="302" rx="30" ry="14"/><ellipse cx="880" cy="298" rx="18" ry="11"/><ellipse cx="1390" cy="292" rx="28" ry="14"/>
+   <path d="M260 300l-14-34 18 28 2-40 6 40 16-30-12 36z"/><path d="M1000 292l-12-28 15 24 3-34 5 34 13-26-10 30z"/></g></g></svg>`}
+document.querySelectorAll("[data-scene]").forEach(d=>d.insertAdjacentHTML("afterbegin",sedona(true)));
+{const band=document.querySelector("[data-parallax]");let raf=0;
+ addEventListener("scroll",()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const r=band.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;band.style.setProperty("--p",(r.top-innerHeight/2)*-.25)})},{passive:true})}
 // sealed envelope: shown once per visit
 {const env=document.getElementById("env");let seen=false;try{seen=sessionStorage.getItem("envOpened")==="1"}catch(e){}
  if(seen)env.remove();else{document.body.style.overflow="hidden";document.getElementById("envBtn").onclick=()=>{env.classList.add("open","gone");vids.forEach(w=>{const v=w.querySelector("video");v.muted=false;const pr=v.play();if(pr&&pr.then)pr.then(()=>v.pause()).catch(()=>{});else v.pause()});setTimeout(()=>playVid(0,true),1500);document.body.style.overflow="";try{sessionStorage.setItem("envOpened","1")}catch(e){}setTimeout(()=>env.remove(),1800)};}}
